@@ -1,8 +1,13 @@
+import PropTypes from "prop-types";
+
 import { Link } from "react-router-dom";
 import headerLogo from "../../assets/img/pizza-logo.svg";
 import { Search } from "../Search/Search";
 
-export const Header = () => (
+export const Header = ({
+  searchValue = "",
+  setSearchValue = () => undefined,
+}) => (
   <div className="header">
     <div className="container">
       <Link to="/">
@@ -14,7 +19,7 @@ export const Header = () => (
           </div>
         </div>
       </Link>
-      <Search />
+      <Search searchValue={searchValue} setSearchValue={setSearchValue} />
       <div className="header__cart">
         <Link to="/cart" className="button button--cart">
           <span>520 ₽</span>
@@ -54,3 +59,8 @@ export const Header = () => (
     </div>
   </div>
 );
+
+Header.propTypes = {
+  searchValue: PropTypes.string,
+  setSearchValue: PropTypes.func,
+};

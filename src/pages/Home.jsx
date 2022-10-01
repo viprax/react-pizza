@@ -1,4 +1,5 @@
 /* eslint-disable react/no-array-index-key */
+import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Categories } from "../components/Categories/Categories";
@@ -6,7 +7,7 @@ import { Sorting } from "../components/Sorting/Sorting";
 import { Skeleton } from "../components/PizzaBlock/Skeleton";
 import { Index } from "../components/PizzaBlock";
 
-export const Home = () => {
+export const Home = ({ searchValue = "" }) => {
   const [pizzaItems, setPizzaItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [categoriesId, setCategoriesId] = useState(0);
@@ -14,22 +15,36 @@ export const Home = () => {
     name: "популярности (по убыв.)",
     sortProperty: "rating",
   });
+  const pizzas = pizzaItems.map((obj) => (
+    <Index
+      key={obj.id}
+      title={obj.title}
+      price={obj.price}
+      imgUrl={obj.imgUrl}
+      size={obj.size}
+      type={obj.type}
+    />
+  ));
+  const skeletons = [...new Array(6)].map((_, index) => (
+    <Skeleton key={index} />
+  ));
 
   useEffect(() => {
     setIsLoading(true);
     const order = sortType.sortProperty.includes("-") ? "asc" : "desc";
     const sortBy = sortType.sortProperty.replace("-", "");
     const category = categoriesId > 0 ? `category=${categoriesId}` : "";
+    const search = searchValue !== "" ? `&search=${searchValue}` : "";
     axios
       .get(
-        `https://6322075efd698dfa29059061.mockapi.io/pizzas?${category}&sortBy=${sortBy}&order=${order} `,
+        `https://6322075efd698dfa29059061.mockapi.io/pizzas?${category}&sortBy=${sortBy}&order=${order}${search}`,
       )
       .then((res) => {
         setPizzaItems(res.data);
         setIsLoading(false);
       });
     window.scrollTo(0, 0);
-  }, [categoriesId, sortType]);
+  }, [categoriesId, sortType, searchValue]);
 
   return (
     <div className="container">
@@ -40,21 +55,14 @@ export const Home = () => {
         />
         <Sorting value={sortType} onChangeSort={(key) => setSortType(key)} />
       </div>
-      <h2 className="content__title">Все пиццы</h2>
-      <div className="content__items">
-        {isLoading
-          ? [...new Array(6)].map((_, index) => <Skeleton key={index} />)
-          : pizzaItems.map((obj) => (
-              <Index
-                key={obj.id}
-                title={obj.title}
-                price={obj.price}
-                imgUrl={obj.imgUrl}
-                size={obj.size}
-                type={obj.type}
-              />
-            ))}
-      </div>
+      <h2 className="content__title">
+        {searchValue ? `Вы ищете: "${searchValue}"` : "Все пиццы"}
+      </h2>
+      <div className="content__items">{isLoading ? skeletons : pizzas}</div>
     </div>
   );
+};
+
+Home.propTypes = {
+  searchValue: PropTypes.string,
 };
