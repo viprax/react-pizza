@@ -1,10 +1,9 @@
-import PropTypes from "prop-types";
+import { useContext } from "react";
+import SearchContext from "../Context/SearchContext";
 import classes from "./Search.module.scss";
 
-export const Search = ({
-  searchValue = "",
-  setSearchValue = () => undefined,
-}) => {
+export const Search = () => {
+  const { searchValue, setSearchValue } = useContext(SearchContext);
   const handleInputClear = () => {
     setSearchValue("");
   };
@@ -48,8 +47,4 @@ export const Search = ({
       )}
     </div>
   );
-};
-Search.propTypes = {
-  searchValue: PropTypes.string,
-  setSearchValue: PropTypes.func,
 };

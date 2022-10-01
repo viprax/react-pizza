@@ -1,14 +1,15 @@
 /* eslint-disable react/no-array-index-key */
-import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Categories } from "../components/Categories/Categories";
 import { Sorting } from "../components/Sorting/Sorting";
 import { Skeleton } from "../components/PizzaBlock/Skeleton";
 import { Index } from "../components/PizzaBlock";
 import { Pagination } from "../components/Pagination/Pagination";
+import SearchContext from "../components/Context/SearchContext";
 
-export const Home = ({ searchValue = "" }) => {
+export const Home = () => {
+  const { searchValue } = useContext(SearchContext);
   const [pizzaItems, setPizzaItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [categoriesId, setCategoriesId] = useState(0);
@@ -66,8 +67,4 @@ export const Home = ({ searchValue = "" }) => {
       </div>
     </div>
   );
-};
-
-Home.propTypes = {
-  searchValue: PropTypes.string,
 };
