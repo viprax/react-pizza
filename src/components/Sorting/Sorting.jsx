@@ -2,7 +2,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 
-export const Sorting = ({ value = "", onChangeSort = () => undefined }) => {
+export const Sorting = ({ value = {}, onChangeSort = () => undefined }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const modalList = [
@@ -64,6 +64,9 @@ export const Sorting = ({ value = "", onChangeSort = () => undefined }) => {
 };
 
 Sorting.propTypes = {
-  value: PropTypes.string,
+  value: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    sortProperty: PropTypes.string.isRequired,
+  }),
   onChangeSort: PropTypes.func,
 };
