@@ -1,15 +1,22 @@
+/* eslint-disable react/no-array-index-key */
 import { useState } from "react";
+import PropTypes from "prop-types";
 
-export const Sorting = () => {
+export const Sorting = ({ value = 0, onChangeSort = () => undefined }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedListItem, setSelectedListItem] = useState(0);
 
-  const modalList = ["популярности", "цене", "названию"];
+  const modalList = [
+    { name: "популярности (по убыв.)", sortProperty: "rating" },
+    { name: "популярности (по возр.)", sortProperty: "-rating" },
+    { name: "цене (по убыв.)", sortProperty: "price" },
+    { name: "цене (по возр.)", sortProperty: "-price" },
+    { name: "названию (по убыв.)", sortProperty: "title" },
+    { name: "названию (по возр.)", sortProperty: "-title" },
+  ];
   const handleListClick = (index) => {
-    setSelectedListItem(index);
+    onChangeSort(index);
     setIsModalVisible(false);
   };
-  const sortName = modalList[selectedListItem];
 
   return (
     <div className="sort">
@@ -31,19 +38,22 @@ export const Sorting = () => {
           type="button"
           onClick={() => setIsModalVisible(!isModalVisible)}
         >
-          {sortName}
+          {value.name}
         </button>
       </div>
       {isModalVisible && (
         <div className="sort__popup">
           <ul>
-            {modalList.map((item, index) => (
+            {modalList.map((obj, index) => (
               <button
+                key={index}
                 type="button"
-                className={selectedListItem === index ? "active" : ""}
-                onClick={() => handleListClick(index)}
+                className={
+                  value.sortProperty === obj.sortProperty ? "active" : ""
+                }
+                onClick={() => handleListClick(obj)}
               >
-                {item}
+                {obj.name}
               </button>
             ))}
           </ul>
@@ -51,4 +61,9 @@ export const Sorting = () => {
       )}
     </div>
   );
+};
+
+Sorting.propTypes = {
+  value: PropTypes.number,
+  onChangeSort: PropTypes.func,
 };
