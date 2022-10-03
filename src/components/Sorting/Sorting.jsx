@@ -1,10 +1,9 @@
 /* eslint-disable react/no-array-index-key */
 import { useState } from "react";
-import PropTypes from "prop-types";
+import { useSelector, useDispatch } from "react-redux";
+import { setSort } from "../../redux/slices/filterSlice";
 
-export const Sorting = ({ value = {}, onChangeSort = () => undefined }) => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
+export const Sorting = () => {
   const modalList = [
     { name: "популярности (по убыв.)", sortProperty: "rating" },
     { name: "популярности (по возр.)", sortProperty: "-rating" },
@@ -13,8 +12,12 @@ export const Sorting = ({ value = {}, onChangeSort = () => undefined }) => {
     { name: "названию (по убыв.)", sortProperty: "title" },
     { name: "названию (по возр.)", sortProperty: "-title" },
   ];
-  const handleListClick = (index) => {
-    onChangeSort(index);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const dispatch = useDispatch();
+  const sort = useSelector((state) => state.filterSlice.sort);
+  const handleListClick = (obj) => {
+    dispatch(setSort(obj));
     setIsModalVisible(false);
   };
 
@@ -38,7 +41,7 @@ export const Sorting = ({ value = {}, onChangeSort = () => undefined }) => {
           type="button"
           onClick={() => setIsModalVisible(!isModalVisible)}
         >
-          {value.name}
+          {sort.name}
         </button>
       </div>
       {isModalVisible && (
@@ -49,7 +52,7 @@ export const Sorting = ({ value = {}, onChangeSort = () => undefined }) => {
                 key={index}
                 type="button"
                 className={
-                  value.sortProperty === obj.sortProperty ? "active" : ""
+                  sort.sortProperty === obj.sortProperty ? "active" : ""
                 }
                 onClick={() => handleListClick(obj)}
               >
@@ -61,12 +64,4 @@ export const Sorting = ({ value = {}, onChangeSort = () => undefined }) => {
       )}
     </div>
   );
-};
-
-Sorting.propTypes = {
-  value: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    sortProperty: PropTypes.string.isRequired,
-  }),
-  onChangeSort: PropTypes.func,
 };

@@ -1,17 +1,36 @@
-import { useContext } from "react";
+import { useCallback, useContext, useRef, useState } from "react";
+import debounce from "lodash.debounce";
 import SearchContext from "../Context/SearchContext";
 import classes from "./Search.module.scss";
 
 export const Search = () => {
-  const { searchValue, setSearchValue } = useContext(SearchContext);
+  const inputRef = useRef();
+  const [value, setValue] = useState();
+  const { setSearchValue } = useContext(SearchContext);
+
   const handleInputClear = () => {
     setSearchValue("");
+    inputRef.current.focus();
   };
+
+  const updateSearchValue = useCallback(
+    debounce((str) => {
+      setSearchValue(str);
+    }, 1000),
+    [],
+  );
+
+  const handleChangeInput = (e) => {
+    setValue(e.target.value);
+    updateSearchValue(e.target.value);
+  };
+
   return (
     <div className={classes.root}>
       <input
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
+        ref={inputRef}
+        value={value}
+        onChange={handleChangeInput}
         className={classes.input}
         placeholder="Поиск .."
         type="text"
@@ -26,10 +45,10 @@ export const Search = () => {
           <path d="M29.71,28.29l-6.5-6.5-.07,0a12,12,0,1,0-1.39,1.39s0,.05,0,.07l6.5,6.5a1,1,0,0,0,1.42,0A1,1,0,0,0,29.71,28.29ZM14,24A10,10,0,1,1,24,14,10,10,0,0,1,14,24Z" />
         </g>
       </svg>
-      {searchValue && (
+      {value && (
         <button
           className={classes.btnClear}
-          onClick={() => handleInputClear()}
+          onClick={handleInputClear}
           type="button"
         >
           <svg

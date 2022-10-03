@@ -2,7 +2,10 @@ import ReactPaginate from "react-paginate";
 import PropTypes from "prop-types";
 import classes from "./Pagination.module.scss";
 
-export const Pagination = ({ onChangePage = () => undefined }) => {
+export const Pagination = ({
+  onChangePage = () => undefined,
+  currentPage = 1,
+}) => {
   return (
     <ReactPaginate
       className={classes.root}
@@ -12,6 +15,7 @@ export const Pagination = ({ onChangePage = () => undefined }) => {
       onPageChange={(e) => onChangePage(e.selected + 1)}
       pageRangeDisplayed={4}
       pageCount={3}
+      forcePage={currentPage - 1}
       renderOnZeroPageCount={null}
     />
   );
@@ -19,4 +23,5 @@ export const Pagination = ({ onChangePage = () => undefined }) => {
 
 Pagination.propTypes = {
   onChangePage: PropTypes.func,
+  currentPage: PropTypes.number,
 };
